@@ -6,51 +6,94 @@
 #include <Adafruit_SH110X.h>
 
 #include "../../config/Pins.h"
+#include "../../config/Config.h"
 
-#define SCREEN_WIDTH 128
-#define SCREEN_HEIGHT 64
-#define OLED_RESET -1
+// ===============================
+//      OLED Display Instance
+// ===============================
 
+// OLED display instance
 static Adafruit_SH1106G display(
-    SCREEN_WIDTH,
-    SCREEN_HEIGHT,
+    DISPLAY_WIDTH,
+    DISPLAY_HEIGHT,
     &Wire,
-    OLED_RESET
+    DISPLAY_RESET
 );
 
+/**
+ * @brief Initialize the OLED display.
+ *
+ * Initializes the I2C communication and configures the SH1106 OLED display.
+ *
+ * @return true if initialization succeeds.
+ * @return false if initialization fails.
+ */
 bool oledInit(){
-    Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
+    Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);               // Initialize I2C communication
 
-    if(!display.begin(0x3C, true)){
+    // Initialize OLED display
+    if(!display.begin(DISPLAY_I2C_ADDRESS, true)){      
         Serial.println("OLED initialization failed");
         return false;
     }
 
+    // Configure display parameters
     display.clearDisplay();
     display.setTextColor(SH110X_WHITE);
     display.setTextSize(1);
     display.setCursor(0,0);
+
+    // Display startup message
     display.println("Desk Robot");
     display.display();
     return true;
 }
 
-void oledClear(){display.clearDisplay();}
+/**
+ * @brief Clear the OLED display buffer.
+ */
+void oledClear(){
+    display.clearDisplay();
+}
 
-void oledUpdate(){display.display();}
+/**
+ * @brief Send the display buffer to the OLED.
+ *
+ * Updates the physical display with the current content stored in the buffer.
+ */
+void oledUpdate(){
+    display.display();
+}
 
+/**
+ * @brief Draw text on the OLED display.
+ *
+ * @param x Horizontal position.
+ * @param y Vertical position.
+ * @param text Text string to display.
+ */
 void oledDrawText(uint8_t x, uint8_t y, const char* text){
     display.setCursor(x, y);
     display.setTextSize(1);
     display.println(text);
 }
 
+/**
+ * @brief Draw the robot face according to its mood.
+ *
+ * Displays a simple graphical representation
+ * of the current robot emotional state.
+ *
+ * @param mood Current robot mood identifier.
+ */
 void oledDrawFace(uint8_t mood){
-    display.clearDisplay();
-    // Eyes
+    display.clearDisplay();         // Clear previous frame
+
+    // Draw robot eyes
     display.fillCircle(35, 30, 8, SH110X_WHITE);
     display.fillCircle(90, 30, 8, SH110X_WHITE);
 
+    // Draw mouth according to mood
     switch(mood){
         case 0: {
             // Happy
