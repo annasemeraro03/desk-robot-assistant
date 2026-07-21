@@ -1,6 +1,9 @@
 #ifndef MPU6050_DRIVER_H
 #define MPU6050_DRIVER_H
 
+/**
+ * @brief Structure containing MPU6050 sensor data.
+ */
 struct MotionData {
     float accelerationX;
     float accelerationY;
@@ -11,10 +14,22 @@ struct MotionData {
     float gyroZ;
 };
 
-// Initialize MPU6050 sensor
-bool MPU6050_init();
+/**
+ * @brief Initialize the MPU6050 sensor.
+ *
+ * @return true if initialization succeeds.
+ * @return false if initialization fails.
+ */
+bool MPU6050Init();
 
-// Read accelerometer and gyroscope data
-bool MPU6050_read(MotionData *data);
+/**
+ * @brief Read accelerometer and gyroscope data.
+ *
+ * @param data Pointer to the structure where sensor data is stored.
+ *
+ * @return true if data reading succeeds.
+ * @return false otherwise.
+ */
+bool MPU6050Read(MotionData *data);
 
 #endif
