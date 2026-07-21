@@ -3,10 +3,20 @@
 
 #include <stdbool.h>
 
-// Initialize the touch sensor
+/**
+ * @brief Initialize the touch sensor.
+ *
+ * @return true if initialization succeeds.
+ * @return false if initialization fails.
+ */
 bool touchInit();
 
-// Read the current touch state
+/**
+ * @brief Check the current touch sensor state.
+ *
+ * @return true if the sensor is pressed.
+ * @return false otherwise.
+ */
 bool touchIsPressed();
 
 #endif
