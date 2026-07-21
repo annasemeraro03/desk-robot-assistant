@@ -3,29 +3,42 @@
 
 #include <stdint.h>
 
-// Motor direction
+/**
+ * @brief Motor movement direction.
+ */
 typedef enum{
     MOTOR_DIRECTION_FORWARD,
     MOTOR_DIRECTION_BACKWARD,
     MOTOR_DIRECTION_STOP
 } MotorDirection;
 
-// Initialize the motor driver
+/**
+ * @brief Initialize the motor driver.
+ *
+ * @return true if initialization succeeds.
+ * @return false if initialization fails.
+ */
 bool motorDriverInit();
 
-// Set left motor speed and direction
-void setLeftMotor(
-    MotorDirection direction,
-    uint8_t speed
-);
+/**
+ * @brief Set left motor speed and direction.
+ *
+ * @param direction Motor movement direction.
+ * @param speed Motor speed value (0-255).
+ */
+void setLeftMotor(MotorDirection direction, uint8_t speed);
 
-// Set right motor speed and direction
-void setRightMotor(
-    MotorDirection direction,
-    uint8_t speed
-);
+/**
+ * @brief Set right motor speed and direction.
+ *
+ * @param direction Motor movement direction.
+ * @param speed Motor speed value (0-255).
+ */
+void setRightMotor(MotorDirection direction, uint8_t speed);
 
-// Stop both motors
+/**
+ * @brief Stop both motors.
+ */
 void stopMotors();
 
 #endif
