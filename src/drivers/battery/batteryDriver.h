@@ -3,16 +3,34 @@
 
 #include <stdint.h>
 
-// Initialize the battery monitoring system
-bool batteryInit();
+/**
+ * @brief Initialize the battery monitoring system.
+ *
+ * @return true if initialization succeeds.
+ * @return false if initialization fails.
+ */
+bool batteryInit();                
 
-// Read the battery voltage
-float batteryGetVoltage();
+/**
+ * @brief Read the current battery voltage.
+ *
+ * @return Battery voltage in volts.
+ */
+float batteryGetVoltage();    
 
-// Read the battery charge level (0 - 100%)
-uint8_t batteryGetPercentage();
+/**
+ * @brief Get the estimated battery charge level.
+ *
+ * @return Battery level percentage (0-100).
+ */
+uint8_t batteryGetPercentage();    
 
-// Check if the battery level is below the threshold
-bool batteryIsLow();
+/**
+ * @brief Check if the battery voltage is below the threshold.
+ *
+ * @return true if the battery needs charging.
+ * @return false otherwise.
+ */
+bool batteryIsLow();              
 
 #endif
