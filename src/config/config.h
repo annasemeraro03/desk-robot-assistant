@@ -14,6 +14,8 @@
 #define DISPLAY_WIDTH 128
 #define DISPLAY_HEIGHT 64
 #define DISPLAY_REFRESH_PERIOD_MS 33
+#define DISPLAY_RESET -1
+#define DISPLAY_I2C_ADDRESS 0x3C
 
 // ===============================
 // Battery Configuration
@@ -27,6 +29,5 @@
 // ===============================
 
 #define WEATHER_UPDATE_PERIOD_MS 300000
-
 
 #endif
