@@ -5,7 +5,7 @@
 // Serial Communication
 // ===============================
 
-#define SERIAL_BAUDRATE 115200
+#define SERIAL_BAUDRATE 9600
 
 // ===============================
 // Display Configuration
