@@ -3,6 +3,7 @@
 #include <Arduino.h>
 
 #include "../I2CScanner/I2CScanner.h"
+#include "../Tests/HardwareTests.h"
 
 /**
  * @brief Execute all available hardware diagnostics.
@@ -17,24 +18,22 @@ void runHardwareDiagnostics(){
     Serial.println(" Desk Robot Hardware Diagnostics");
     Serial.println("========================================");
 
+    Serial.println("\n--- I2C Scan ---");
     scanI2CBus();
 
-    // TODO:
-    // Verify OLED initialization.
+    Serial.println("\n--- OLED Test ---");
+    testOLED();
 
-    // TODO:
-    // Verify MPU6050 communication.
+    Serial.println("\n--- MPU6050 Test ---");
+    testMPU6050();
 
-    // TODO:
-    // Verify touch sensor.
+    Serial.println("\n--- Touch Test ---");
+    testTouch();
 
-    // TODO:
-    // Verify battery ADC.
+    // Serial.println("\n--- Battery Test ---");
+    // testBattery();
 
-    // TODO:
-    // Verify motor driver.
+    // Run the motor test separately after checking the wiring.
 
-    Serial.println();
-    Serial.println("Hardware diagnostics completed.");
-    Serial.println();
+    Serial.println("\nHardware diagnostics completed.");
 }
