@@ -1,6 +1,6 @@
 
 #include <Arduino.h>
-#include "../../drivers/Battery/BatteryDriver.h"
+#include "../../drivers/Battery/batteryDriver.h"
 
 /**
  * @brief Test battery voltage measurement once.
