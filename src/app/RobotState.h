@@ -7,7 +7,7 @@
 /**
  * @brief Robot emotional states.
  */
-typedef enum: uint8_t{
+typedef enum : uint8_t {
     MOOD_HAPPY,
     MOOD_BORED,
     MOOD_FOCUS,
@@ -15,13 +15,15 @@ typedef enum: uint8_t{
     MOOD_LOW_BATTERY,
     MOOD_SURPRISED,
     MOOD_DIZZY,
-    MOOD_CHARMING
+    MOOD_CHARMING,
+    MOOD_ANGRY,
+    MOOD_VICTORY
 } RobotMood;
 
 /**
  * @brief Robot operating modes.
  */
-typedef enum: uint8_t{
+typedef enum : uint8_t {
     MODE_NORMAL,
     MODE_FOCUS,
     MODE_POWER_SAVE,
@@ -31,16 +33,17 @@ typedef enum: uint8_t{
 /**
  * @brief OLED display pages.
  */
-typedef enum: uint8_t{
+typedef enum : uint8_t {
     PAGE_EMOTION,
     PAGE_CLOCK,
-    PAGE_WEATHER
+    PAGE_WEATHER,
+    PAGE_CALENDAR
 } UIPage;
 
 /**
  * @brief Robot movement commands.
  */
-typedef enum{
+typedef enum {
     MOVEMENT_STOP,
     MOVEMENT_FORWARD,
     MOVEMENT_BACKWARD,
@@ -52,7 +55,7 @@ typedef enum{
 /**
  * @brief Complete robot runtime state.
  */
-typedef struct{
+typedef struct {
     RobotMood mood;
     RobotMode mode;
     RobotMovement movement;
