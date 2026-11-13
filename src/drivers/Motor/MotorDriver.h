@@ -21,6 +21,15 @@ typedef enum{
 bool motorDriverInit();
 
 /**
+ * @brief Set the Motor object
+ * 
+ * @param motorIndex 
+ * @param direction 
+ * @param speed 
+ */
+void setMotor(uint8_t motorIndex, MotorDirection direction, uint8_t speed);
+
+/**
  * @brief Set left motor speed and direction.
  *
  * @param direction Motor movement direction.

@@ -18,13 +18,6 @@
 #define DISPLAY_I2C_ADDRESS 0x3C
 
 // ===============================
-// Battery Configuration
-// ===============================
-
-#define BATTERY_CHECK_PERIOD_MS 5000
-#define LOW_BATTERY_VOLTAGE 3.4
-
-// ===============================
 // Network Configuration
 // ===============================
 

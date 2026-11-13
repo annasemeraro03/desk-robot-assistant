@@ -7,5 +7,6 @@ void testMotor();
 void testMPU6050();
 void testOLED();
 void testTouch();
+void testMotor();
 
 #endif
