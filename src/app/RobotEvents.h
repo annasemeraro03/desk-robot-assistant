@@ -9,7 +9,6 @@
 typedef enum : uint8_t{
     EVENT_TOUCH,
     EVENT_MOTION,
-    EVENT_POWER,
     EVENT_FOCUS,
     EVENT_NETWORK,
     EVENT_CALENDAR
@@ -45,15 +44,6 @@ typedef enum : uint8_t{
     MOTION_EVENT_SHAKE,
     MOTION_EVENT_FALL
 } MotionEvent;
-
-/**
- * @brief Power management events.
- */
-typedef enum : uint8_t{
-    POWER_EVENT_LOW_BATTERY,
-    POWER_EVENT_POWER_SAVING_ENABLED,
-    POWER_EVENT_POWER_SAVING_DISABLED
-} PowerEvent;
 
 /**
  * @brief Focus mode events.

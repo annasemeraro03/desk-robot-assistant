@@ -12,7 +12,6 @@ typedef enum : uint8_t {
     MOOD_BORED,
     MOOD_FOCUS,
     MOOD_SLEEPY,
-    MOOD_LOW_BATTERY,
     MOOD_SURPRISED,
     MOOD_DIZZY,
     MOOD_CHARMING,

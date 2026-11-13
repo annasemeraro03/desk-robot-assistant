@@ -30,9 +30,6 @@ void runHardwareDiagnostics(){
     Serial.println("\n--- Touch Test ---");
     testTouch();
 
-    // Serial.println("\n--- Battery Test ---");
-    // testBattery();
-
     // Run the motor test separately after checking the wiring.
 
     Serial.println("\nHardware diagnostics completed.");

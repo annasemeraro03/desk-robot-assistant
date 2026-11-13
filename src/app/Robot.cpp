@@ -9,7 +9,6 @@
 #include "../tasks/Graphics/GraphicsTask.h"
 #include "../tasks/Mood/MoodTask.h"
 #include "../tasks/Network/NetworkTask.h"
-#include "../tasks/Power/PowerTask.h"
 
 // Robot Events
 #include "RobotEvents.h"
@@ -19,7 +18,6 @@
 #include "../drivers/OLED/OLEDDriver.h"
 #include "../drivers/Touch/TouchDriver.h"
 #include "../drivers/Motor/MotorDriver.h"
-#include "../drivers/Battery/BatteryDriver.h"
 
 // Diagnostics
 #include "../diagnostics/HardwareDiagnostics/HardwareDiagnostics.h"
@@ -41,7 +39,6 @@ void robotInit(){
     /*
      * Initialize hardware drivers
      */
-    batteryInit();
     touchInit();
     motorDriverInit();
     oledInit();
@@ -64,7 +61,6 @@ void robotInit(){
     xTaskCreatePinnedToCore(graphicsTask, "Graphics", 4096, NULL, 2, NULL, 1);
     xTaskCreatePinnedToCore(moodTask, "Mood", 2048, NULL, 2, NULL, 1);
     xTaskCreatePinnedToCore(networkTask, "Network", 4096, NULL, 1, NULL, 1);
-    xTaskCreatePinnedToCore(powerTask, "Power", 2048, NULL, 1, NULL, 1);
 
     Serial.println("Robot initialization completed.");
 }

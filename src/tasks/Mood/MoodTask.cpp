@@ -1,4 +1,3 @@
-
 #include "MoodTask.h"
 
 #include <Arduino.h>
@@ -154,10 +153,8 @@ static void processRobotEvent(const RobotEvent &event) {
 
             break;
 
-        case EVENT_POWER:
-        case EVENT_NETWORK:
-        default:
-            break;
+        case EVENT_NETWORK: break;
+        default: break;
     }
 }
 

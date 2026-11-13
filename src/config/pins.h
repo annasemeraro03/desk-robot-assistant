@@ -28,10 +28,4 @@
 #define RIGHT_MOTOR_IN1 D7
 #define RIGHT_MOTOR_IN2 D8
 
-// ===============================
-// Battery Voltage Measurement
-// ===============================
-
-#define BATTERY_ADC_PIN 0
-
 #endif

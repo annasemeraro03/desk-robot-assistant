@@ -20,9 +20,6 @@ static constexpr TickType_t EDGE_TASK_PERIOD = pdMS_TO_TICKS(10);
  * sent to the global event queue so that other tasks can react
  * accordingly.
  *
- * Future versions will implement complementary or Kalman filters,
- * pitch/roll estimation and more robust edge detection algorithms.
- *
  * @param pvParameters Task parameters (unused).
  */
 void edgeDetectionTask(void *pvParameters){
