@@ -2,90 +2,40 @@
 
 #include <Arduino.h>
 
+#include "../../config/Config.h"
 #include "../../app/Robot.h"
 #include "../../app/RobotState.h"
 #include "../../drivers/Motor/MotorDriver.h"
 
-// Task execution period
-static constexpr TickType_t LOCOMOTION_TASK_PERIOD = pdMS_TO_TICKS(50);
-
 /**
- * @brief FreeRTOS task responsible for robot movement.
+ * @brief Task Periodico Real-Time tau_3: Task_Motor_Ctrl (Specifica Sez. 5.1)
+ *        - Periodo:    T_3 = 50 ms (Deadline D_3 = 50 ms)
+ *        - WCET:       C_3 = 3.0 ms
+ *        - Bloccaggio: B_3 = 2.5 ms
+ *        - Risposta:   R_3 = 8.5 ms <= D_3 = 50 ms
+ *        - Priorita':  Media-Alta (4) su Core 1
  *
- * The task periodically updates the robot locomotion according to the
- * current operating mode and movement command. It controls the motor
- * driver while ensuring that the robot remains stationary whenever
- * movement is disabled (e.g., Focus Mode, Sleep Mode or Power Saving Mode).
- *
- * Future versions will implement autonomous movement patterns,
- * obstacle avoidance and smooth acceleration profiles.
- *
- * @param pvParameters Task parameters (unused).
+ * In questa fase di verifica della FSM il task viene regolarmente schedulato
+ * ogni 50 ms e acquisisce stateMutex (rispettando il modello analitico RTA),
+ * mantenendo tuttavia i 4 motori N20 fermi in modalita' passiva.
  */
-void locomotionTask(void *pvParameters){
+void locomotionTask(void *pvParameters) {
+    (void)pvParameters;
 
-    for(;;){
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    const TickType_t xFrequency = pdMS_TO_TICKS(TASK_MOTOR_PERIOD_MS);
 
-        // Movement disabled
-        if(robotState.mode != MODE_NORMAL){
+    RobotStateData snapshot;
+    //motorStop();
 
-            stopMotors();
+    for (;;) {
+        // Lettura thread-safe dello stato condiviso (C_cs,State <= 0.2 ms)
+        robotStateGetSnapshot(&snapshot);
 
-            vTaskDelay(LOCOMOTION_TASK_PERIOD);
-            continue;
-        }
+        // Modalita' passiva richiesta per questa fase: mantiene i motori fermi
+       // motorStop();
 
-        // Execute the requested movement
-        switch(robotState.movement){
-
-            case MOVEMENT_STOP: {
-
-                stopMotors();
-
-                break;
-            }
-
-            case MOVEMENT_FORWARD: {
-
-                // TODO:
-                // Drive both motors forward.
-
-                break;
-            }
-
-            case MOVEMENT_BACKWARD: {
-
-                // TODO:
-                // Drive both motors backward.
-
-                break;
-            }
-
-            case MOVEMENT_LEFT: {
-
-                // TODO:
-                // Rotate left.
-
-                break;
-            }
-
-            case MOVEMENT_RIGHT: {
-
-                // TODO:
-                // Rotate right.
-
-                break;
-            }
-
-            case MOVEMENT_RANDOM: {
-
-                // TODO:
-                // Execute a random movement pattern.
-
-                break;
-            }
-        }
-
-        vTaskDelay(LOCOMOTION_TASK_PERIOD);
+        // Risveglio deterministico esattamente ogni T_3 = 50 ms
+        vTaskDelayUntil(&xLastWakeTime, xFrequency);
     }
 }

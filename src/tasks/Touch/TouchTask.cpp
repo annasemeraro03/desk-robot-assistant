@@ -1,117 +1,106 @@
-
 #include "TouchTask.h"
 
 #include <Arduino.h>
 
+#include "../../config/Config.h"
 #include "../../drivers/Touch/TouchDriver.h"
 #include "../../app/RobotEvents.h"
 #include "../../app/Robot.h"
 
-// Polling period
-static constexpr TickType_t TOUCH_PERIOD = pdMS_TO_TICKS(20);
-
-// Touch classification timings
-static constexpr uint32_t MIN_TAP_DURATION_MS = 50;
-static constexpr uint32_t MAX_TAP_DURATION_MS = 400;
-static constexpr uint32_t PETTING_DURATION_MS = 800;
-static constexpr uint32_t TAP_GROUP_WINDOW_MS = 350;
-
 /**
- * @brief Send a touch event to the robot event queue.
- *
- * @param eventId Touch event identifier.
+ * @brief Invia un evento touch classificato alla coda eventi della FSM.
  */
 static void sendTouchEvent(TouchEvent eventId) {
     RobotEvent event;
-
     event.type = EVENT_TOUCH;
-    event.id = eventId;
+    event.id   = eventId;
 
     xQueueSend(robotEventQueue, &event, 0);
 }
 
 /**
- * @brief FreeRTOS task that classifies touch interactions.
+ * @brief Task Periodico Real-Time tau_2: Task_Touch_Input (Specifica Sez. 3.2.A e 5.1)
+ *        - Periodo:    T_2 = 25 ms (Deadline D_2 = 25 ms)
+ *        - WCET:       C_2 = 1.0 ms
+ *        - Bloccaggio: B_2 = 2.5 ms (push-through blocking da PIP)
+ *        - Risposta:   R_2 = 5.5 ms <= D_2 = 25 ms
+ *        - Priorita':  Alta (5) su Core 1
  *
- * Detects single, double and triple taps, as well as long
- * presses used to represent petting interactions.
- *
- * @param pvParameters Task parameters (unused).
+ * Implementa la grammatica temporale sul sensore TTP223 (pin D6):
+ *   - Tap breve: 50 ms <= t_on < 400 ms con finestra inter-tap t_gap = 350 ms
+ *     -> emette EV_TAP_1, EV_TAP_2, EV_TAP_3
+ *   - Carezza prolungata: livello HIGH continuo per t_on >= 800 ms
+ *     -> emette immediatamente EV_PETTING (TOUCH_EVENT_LONG)
  */
 void touchTask(void *pvParameters) {
-
     (void)pvParameters;
 
-    bool previousState = false;
+    TickType_t xLastWakeTime = xTaskGetTickCount();
+    const TickType_t xFrequency = pdMS_TO_TICKS(TASK_TOUCH_PERIOD_MS);
+
+    bool previousState     = false;
     bool longPressDetected = false;
 
-    uint32_t pressStartMs = 0;
+    uint32_t pressStartMs  = 0;
     uint32_t lastReleaseMs = 0;
-
-    uint8_t tapCount = 0;
+    uint8_t tapCount       = 0;
 
     for (;;) {
+        const bool currentState = touchIsPressed();
+        const uint32_t now      = millis();
 
-        bool currentState = touchIsPressed();
-        uint32_t now = millis();
-
-        // Detect touch rising edge
+        // 1. Fronte di salita (inizio pressione sul TTP223)
         if (currentState && !previousState) {
-            pressStartMs = now;
+            pressStartMs      = now;
             longPressDetected = false;
         }
 
-        // Detect a long press (petting)
+        // 2. Rilevamento carezza / coccola prolungata (t_on >= 800 ms)
         if (currentState && !longPressDetected) {
-
-            if (now - pressStartMs >= PETTING_DURATION_MS) {
-
-                sendTouchEvent(TOUCH_EVENT_LONG);
-
+            if (now - pressStartMs >= TOUCH_PETTING_MIN_MS) {
+                sendTouchEvent(TOUCH_EVENT_LONG); // EV_PETTING
                 longPressDetected = true;
-                tapCount = 0;
+                tapCount          = 0;
             }
         }
 
-        // Detect touch release
+        // 3. Fronte di discesa (rilascio del sensore)
         if (!currentState && previousState) {
-
-            uint32_t pressDuration = now - pressStartMs;
+            const uint32_t pressDuration = now - pressStartMs;
 
             if (!longPressDetected &&
-                pressDuration >= MIN_TAP_DURATION_MS &&
-                pressDuration <= MAX_TAP_DURATION_MS) {
+                pressDuration >= TOUCH_MIN_TAP_MS &&
+                pressDuration <  TOUCH_MAX_TAP_MS) {
 
                 if (tapCount < 3) {
                     tapCount++;
                 }
-
                 lastReleaseMs = now;
 
-                // Three taps are immediately recognized
+                // Il triplo tap viene emesso immediatamente al terzo rilascio valido
                 if (tapCount == 3) {
-                    sendTouchEvent(TOUCH_EVENT_TRIPLE);
+                    sendTouchEvent(TOUCH_EVENT_TRIPLE); // EV_TAP_3
                     tapCount = 0;
                 }
             }
         }
 
-        // Classify pending taps after the grouping window
+        // 4. Scadenza finestra di inter-tap timeout (t_gap = 350 ms dal rilascio)
         if (!currentState &&
             tapCount > 0 &&
-            now - lastReleaseMs >= TAP_GROUP_WINDOW_MS) {
+            (now - lastReleaseMs >= TOUCH_INTER_TAP_GAP_MS)) {
 
             if (tapCount == 1) {
-                sendTouchEvent(TOUCH_EVENT_SINGLE);
+                sendTouchEvent(TOUCH_EVENT_SINGLE); // EV_TAP_1
             } else if (tapCount == 2) {
-                sendTouchEvent(TOUCH_EVENT_DOUBLE);
+                sendTouchEvent(TOUCH_EVENT_DOUBLE); // EV_TAP_2
             }
-
             tapCount = 0;
         }
 
         previousState = currentState;
 
-        vTaskDelay(TOUCH_PERIOD);
+        // Risveglio deterministico esattamente ogni T_2 = 25 ms
+        vTaskDelayUntil(&xLastWakeTime, xFrequency);
     }
 }
