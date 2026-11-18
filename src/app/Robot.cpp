@@ -136,4 +136,5 @@ void robotInit() {
     Serial.println("  '2' -> Simula EV_TAP_2 (2 tap -> CONCENTRATA)");
     Serial.println("  '3' -> Simula EV_TAP_3 (3 tap -> INFO METEO)");
     Serial.println("  'p' -> Simula EV_PETTING (carezza > 800ms -> COCCOLATA)");
-}
+}  
+//src/tasks/Touch/TouchTask.cpp  src/tasks/Touch/TouchTask.cpp  src/tasks/Touch/TouchTask.cpp  src/tasks/Touch/TouchTask.cpp

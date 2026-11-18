@@ -5,6 +5,12 @@ This document collects the remaining implementation tasks, improvements and test
 Tasks can be checked off as they are completed.
 
 ---
+## 0.5. Miglioramenti finali
+- [ ] macchina a stati
+- [ ] locomotion
+- [ ] sincronizzazione calendario (USB)
+- [ ] sincronizzazione meteo (USB)
+- [ ] grafiche 
 
 ## 1. Finite State Machine (FSM)
 
